@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 
@@ -42,7 +42,7 @@ const Testimonials = () => {
                   <AvatarFallback>{testimonial.avatar}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="font-semibold">{testimonial.name}</h3>
+                  <CardTitle className="font-semibold text-base">{testimonial.name}</CardTitle>
                   <div className="flex items-center">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
