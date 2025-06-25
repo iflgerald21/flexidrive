@@ -36,6 +36,7 @@ export default function Header() {
     { name: "Vehicles", href: "/#vehicles" },
     { name: "Rates", href: "#" },
     { name: "Booking", href: "/#booking" },
+    { name: "Calendar", href: "/calendar" },
     { name: "About Us", href: "/#why-us" },
     { name: "Blogs", href: "/blogs" },
     { name: "Contact", href: "#" },
@@ -44,17 +45,15 @@ export default function Header() {
   return (
     <header className={cn(
         "sticky top-0 z-50 w-full transition-all duration-300",
-        scrolled ? "bg-background/90 backdrop-blur-sm border-b" : "bg-primary border-transparent"
+        scrolled ? "bg-background/90 backdrop-blur-sm border-b" : "bg-transparent"
     )}>
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <Car className={cn(
-              "h-8 w-8 transition-colors",
-              scrolled ? "text-primary" : "text-primary-foreground"
+              "h-8 w-8 transition-colors text-primary"
           )} />
           <span className={cn(
-              "text-2xl font-bold font-headline transition-colors",
-              scrolled ? "text-foreground" : "text-primary-foreground"
+              "text-2xl font-bold font-headline transition-colors text-foreground"
           )}>
             FlexiDrive
           </span>
@@ -67,10 +66,7 @@ export default function Header() {
               key={link.name}
               href={link.href}
               className={cn(
-                  "text-sm font-medium transition-colors",
-                  scrolled
-                    ? "text-muted-foreground hover:text-foreground"
-                    : "text-primary-foreground/80 hover:text-primary-foreground"
+                  "text-sm font-medium transition-colors text-muted-foreground hover:text-foreground"
               )}
             >
               {link.name}
@@ -86,10 +82,7 @@ export default function Header() {
                 variant="ghost"
                 size="icon"
                 className={cn(
-                    "transition-colors",
-                    scrolled
-                        ? "text-foreground hover:bg-accent"
-                        : "text-primary-foreground hover:bg-white/20"
+                    "transition-colors text-foreground hover:bg-accent"
                 )}
               >
                 <Menu className="h-6 w-6" />
