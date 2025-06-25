@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,9 +10,22 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 
 export default function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -25,11 +38,19 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-primary/20 bg-primary/15 backdrop-blur supports-[backdrop-filter]:bg-primary/10">
+    <header className={cn(
+        "sticky top-0 z-50 w-full transition-colors duration-300",
+        isScrolled 
+            ? "bg-transparent"
+            : "bg-primary"
+    )}>
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
-          <Car className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold font-headline">FlexiDrive</span>
+          <Car className={cn("h-8 w-8 transition-colors", isScrolled ? "text-primary" : "text-primary-foreground")} />
+          <span className={cn(
+            "text-2xl font-bold font-headline transition-colors",
+            isScrolled ? "text-foreground" : "text-primary-foreground"
+          )}>FlexiDrive</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -38,7 +59,12 @@ export default function Header() {
             <Link
               key={link.name}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              className={cn(
+                "text-sm font-medium transition-colors",
+                isScrolled 
+                  ? "text-muted-foreground hover:text-primary"
+                  : "text-primary-foreground/80 hover:text-primary-foreground"
+              )}
             >
               {link.name}
             </Link>
@@ -49,7 +75,9 @@ export default function Header() {
         <div className="md:hidden">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className={cn(
+                isScrolled ? "text-foreground" : "text-primary-foreground hover:bg-white/20"
+              )}>
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle Menu</span>
               </Button>
