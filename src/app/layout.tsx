@@ -1,6 +1,9 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
+import Header from '@/components/header';
+import Footer from '@/components/footer';
+import PageTransition from '@/components/page-transition';
 
 export const metadata: Metadata = {
   title: 'FlexiDrive Rentals',
@@ -21,7 +24,13 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        {children}
+        <div className="flex flex-col min-h-dvh bg-background text-foreground">
+          <Header />
+          <PageTransition>
+            {children}
+          </PageTransition>
+          <Footer />
+        </div>
         <Toaster />
       </body>
     </html>

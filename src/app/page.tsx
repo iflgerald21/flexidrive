@@ -1,12 +1,10 @@
 "use client";
 
 import dynamic from 'next/dynamic';
-import Header from '@/components/header';
 import VehicleHighlights from '@/components/vehicle-highlights';
 import BookingSection from '@/components/booking-section';
 import WhyChooseUs from '@/components/why-choose-us';
 import Testimonials from '@/components/testimonials';
-import Footer from '@/components/footer';
 
 const HeroSection = dynamic(() => import('@/components/hero-section'), { 
   ssr: false,
@@ -15,16 +13,12 @@ const HeroSection = dynamic(() => import('@/components/hero-section'), {
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-dvh bg-background text-foreground">
-      <Header />
-      <main className="flex-grow">
-        <HeroSection />
-        <VehicleHighlights />
-        <BookingSection />
-        <WhyChooseUs />
-        <Testimonials />
-      </main>
-      <Footer />
-    </div>
+    <>
+      <HeroSection />
+      <VehicleHighlights />
+      <BookingSection />
+      <WhyChooseUs />
+      <Testimonials />
+    </>
   );
 }

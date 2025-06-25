@@ -1,5 +1,3 @@
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
@@ -140,39 +138,33 @@ export default function BlogsPage() {
     const otherPosts = blogPosts.slice(1);
 
     return (
-        <div className="flex flex-col min-h-dvh bg-background text-foreground">
-            <Header />
-            <main className="flex-grow">
-                <section className="py-12 md:py-24">
-                    <div className="container mx-auto px-4">
-                        <h1 className="text-4xl md:text-5xl font-bold font-headline text-center mb-4">
-                            FlexiDrive Blog
-                        </h1>
-                        <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-                            Stay updated with the latest car rental tips, travel guides, and company news.
-                        </p>
+        <section className="py-12 md:py-24">
+            <div className="container mx-auto px-4">
+                <h1 className="text-4xl md:text-5xl font-bold font-headline text-center mb-4">
+                    FlexiDrive Blog
+                </h1>
+                <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
+                    Stay updated with the latest car rental tips, travel guides, and company news.
+                </p>
 
-                        {featuredPost && (
-                            <div className="mb-12">
-                                <h2 className="text-2xl font-bold font-headline mb-6">Featured Post</h2>
-                                <BlogPostCard post={featuredPost} featured={true} />
-                            </div>
-                        )}
-                        
-                        {otherPosts.length > 0 && (
-                            <>
-                                <h2 className="text-2xl font-bold font-headline mb-6">More Posts</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                    {otherPosts.map((post) => (
-                                        <BlogPostCard key={post.title} post={post} />
-                                    ))}
-                                </div>
-                            </>
-                        )}
+                {featuredPost && (
+                    <div className="mb-12">
+                        <h2 className="text-2xl font-bold font-headline mb-6">Featured Post</h2>
+                        <BlogPostCard post={featuredPost} featured={true} />
                     </div>
-                </section>
-            </main>
-            <Footer />
-        </div>
+                )}
+                
+                {otherPosts.length > 0 && (
+                    <>
+                        <h2 className="text-2xl font-bold font-headline mb-6">More Posts</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {otherPosts.map((post) => (
+                                <BlogPostCard key={post.title} post={post} />
+                            ))}
+                        </div>
+                    </>
+                )}
+            </div>
+        </section>
     );
 }
