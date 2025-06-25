@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,22 @@ import { cn } from "@/lib/utils";
 
 export default function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrolled]);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -26,11 +42,20 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-primary">
+    <header className={cn(
+        "sticky top-0 z-50 w-full transition-all duration-300",
+        scrolled ? "bg-background/90 backdrop-blur-sm border-b" : "bg-primary border-transparent"
+    )}>
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
-          <Car className="h-8 w-8 text-primary-foreground" />
-          <span className="text-2xl font-bold font-headline text-primary-foreground">
+          <Car className={cn(
+              "h-8 w-8 transition-colors",
+              scrolled ? "text-primary" : "text-primary-foreground"
+          )} />
+          <span className={cn(
+              "text-2xl font-bold font-headline transition-colors",
+              scrolled ? "text-foreground" : "text-primary-foreground"
+          )}>
             FlexiDrive
           </span>
         </Link>
@@ -41,7 +66,12 @@ export default function Header() {
             <Link
               key={link.name}
               href={link.href}
-              className="text-sm font-medium text-primary-foreground/80 transition-colors hover:text-primary-foreground"
+              className={cn(
+                  "text-sm font-medium transition-colors",
+                  scrolled
+                    ? "text-muted-foreground hover:text-foreground"
+                    : "text-primary-foreground/80 hover:text-primary-foreground"
+              )}
             >
               {link.name}
             </Link>
@@ -55,7 +85,12 @@ export default function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-primary-foreground hover:bg-white/20"
+                className={cn(
+                    "transition-colors",
+                    scrolled
+                        ? "text-foreground hover:bg-accent"
+                        : "text-primary-foreground hover:bg-white/20"
+                )}
               >
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle Menu</span>
