@@ -3,11 +3,12 @@ import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react"
 
 const Footer = () => {
   const navLinks = [
-    { name: "Home", href: "#" },
-    { name: "Vehicles", href: "#vehicles" },
+    { name: "Home", href: "/" },
+    { name: "Vehicles", href: "/#vehicles" },
     { name: "Rates", href: "#" },
-    { name: "Booking", href: "#booking" },
-    { name: "About Us", href: "#" },
+    { name: "Booking", href: "/#booking" },
+    { name: "About Us", href: "/#why-us" },
+    { name: "Blogs", href: "/blogs" },
     { name: "Contact", href: "#" },
   ];
 

@@ -15,18 +15,19 @@ export default function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const navLinks = [
-    { name: "Home", href: "#" },
-    { name: "Vehicles", href: "#vehicles" },
+    { name: "Home", href: "/" },
+    { name: "Vehicles", href: "/#vehicles" },
     { name: "Rates", href: "#" },
-    { name: "Booking", href: "#booking" },
-    { name: "About Us", href: "#why-us" },
+    { name: "Booking", href: "/#booking" },
+    { name: "About Us", href: "/#why-us" },
+    { name: "Blogs", href: "/blogs" },
     { name: "Contact", href: "#" },
   ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-        <Link href="#" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <Car className="h-8 w-8 text-primary" />
           <span className="text-2xl font-bold font-headline">FlexiDrive</span>
         </Link>
@@ -55,7 +56,7 @@ export default function Header() {
             </SheetTrigger>
             <SheetContent side="right">
               <div className="flex flex-col gap-6 p-6">
-                <Link href="#" className="flex items-center gap-2 mb-4" onClick={() => setIsSheetOpen(false)}>
+                <Link href="/" className="flex items-center gap-2 mb-4" onClick={() => setIsSheetOpen(false)}>
                   <Car className="h-8 w-8 text-primary" />
                   <span className="text-2xl font-bold font-headline">FlexiDrive</span>
                 </Link>
