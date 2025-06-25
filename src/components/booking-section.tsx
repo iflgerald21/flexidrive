@@ -224,7 +224,7 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
                           <RadioGroup
                             onValueChange={field.onChange}
                             value={field.value}
-                            className="grid grid-cols-2 sm:grid-cols-3 gap-4"
+                            className="grid grid-cols-2 sm:grid-cols-3 gap-4 justify-items-center"
                           >
                             {vehicles.map((vehicle) => (
                               <div key={vehicle.name}>
@@ -233,7 +233,7 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
                                   htmlFor={vehicle.name}
                                   className="block cursor-pointer"
                                 >
-                                  <Card className="overflow-hidden transition-all border-2 border-muted peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary hover:border-primary/50">
+                                  <Card className="w-40 overflow-hidden transition-all border-2 border-muted peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary hover:border-primary/50">
                                     <CardContent className="p-0">
                                       <div className="relative aspect-square w-full">
                                         <Image
