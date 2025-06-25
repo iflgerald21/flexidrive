@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import PageTransition from '@/components/page-transition';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: 'FlexiDrive Rentals',
@@ -32,6 +33,10 @@ export default function RootLayout({
           <Footer />
         </div>
         <Toaster />
+        <Script
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+          strategy="beforeInteractive"
+        />
       </body>
     </html>
   );

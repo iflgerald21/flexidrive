@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, ControllerRenderProps } from "react-hook-form";
 import * as z from "zod";
 import { format } from "date-fns";
 import { CalendarIcon, MapPin, Clock, Car } from "lucide-react";
+import usePlacesAutocomplete from "use-places-autocomplete";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -41,10 +42,91 @@ const bookingFormSchema = z.object({
   returnTime: z.string().min(1, { message: "Return time is required." }),
 });
 
+type BookingFormValues = z.infer<typeof bookingFormSchema>;
+
+const PlacesAutocompleteInput = ({ 
+  field, 
+  placeholder 
+}: { 
+  field: ControllerRenderProps<BookingFormValues, "pickupLocation"> | ControllerRenderProps<BookingFormValues, "dropoffLocation">;
+  placeholder: string;
+}) => {
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions,
+  } = usePlacesAutocomplete({
+    debounce: 300,
+    defaultValue: field.value,
+  });
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+    field.onChange(e.target.value);
+  };
+
+  const handleSelect = ({ description }: { description: string }) => () => {
+    setValue(description, false);
+    field.onChange(description);
+    clearSuggestions();
+  };
+
+  useEffect(() => {
+    if (field.value !== value) {
+        setValue(field.value);
+    }
+  }, [field.value, value, setValue]);
+
+  const renderSuggestions = () => (
+    data.map((suggestion) => {
+      const {
+        place_id,
+        structured_formatting: { main_text, secondary_text },
+      } = suggestion;
+      return (
+        <li
+          key={place_id}
+          onClick={handleSelect(suggestion)}
+          className="p-2 hover:bg-accent cursor-pointer rounded-md"
+        >
+          <strong>{main_text}</strong> <small className="text-muted-foreground">{secondary_text}</small>
+        </li>
+      );
+    })
+  );
+
+  return (
+    <div className="relative" ref={ref}>
+      <div className="relative">
+        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+        <Input
+          {...field}
+          value={value}
+          onChange={handleInput}
+          onBlur={(e) => {
+            field.onBlur(e);
+            setTimeout(() => clearSuggestions(), 150);
+          }}
+          disabled={!ready}
+          placeholder={placeholder}
+          className="pl-10"
+          autoComplete="off"
+        />
+      </div>
+      {status === "OK" && <ul className="absolute z-50 w-full mt-1 bg-card border rounded-md shadow-lg">{renderSuggestions()}</ul>}
+    </div>
+  );
+};
+
+
 export default function BookingSection({ vehicleToBook }: { vehicleToBook: string }) {
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof bookingFormSchema>>({
+  const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
       vehicleName: "",
@@ -62,7 +144,7 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
   }, [vehicleToBook, form]);
 
 
-  function onSubmit(values: z.infer<typeof bookingFormSchema>) {
+  function onSubmit(values: BookingFormValues) {
     const params = new URLSearchParams();
     if (values.vehicleName) params.append("vehicleName", values.vehicleName);
     params.append("pickupLocation", values.pickupLocation);
@@ -113,10 +195,7 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
                       <FormItem>
                         <FormLabel>Pickup Location</FormLabel>
                         <FormControl>
-                            <div className="relative">
-                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input placeholder="e.g., Airport, City Center" {...field} className="pl-10" />
-                            </div>
+                            <PlacesAutocompleteInput field={field} placeholder="e.g., Airport, City Center" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -129,10 +208,7 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
                       <FormItem>
                         <FormLabel>Drop-off Location</FormLabel>
                         <FormControl>
-                            <div className="relative">
-                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input placeholder="e.g., Hotel, Train Station" {...field} className="pl-10"/>
-                            </div>
+                            <PlacesAutocompleteInput field={field} placeholder="e.g., Hotel, Train Station" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
