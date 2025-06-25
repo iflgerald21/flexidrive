@@ -13,6 +13,11 @@ import "swiper/css/navigation";
 const heroImages = [
   {
     src: "https://placehold.co/1920x1080.png",
+    alt: "Red MG5 driving on a highway under a cloudy sky",
+    hint: "red car highway",
+  },
+  {
+    src: "https://placehold.co/1920x1080.png",
     alt: "A sleek red sedan parked on a city street at dusk",
     hint: "red car",
   },
