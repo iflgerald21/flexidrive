@@ -258,7 +258,7 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
                                       htmlFor={vehicle.name}
                                       className="block cursor-pointer"
                                     >
-                                      <Card className="w-48 overflow-hidden transition-all border-2 border-muted peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary hover:border-primary/50">
+                                      <Card className="w-48 overflow-hidden transition-all border-2 border-muted peer-data-[state=checked]:border-primary hover:border-primary/50">
                                         <CardContent className="p-0">
                                           <div className="relative aspect-video w-full">
                                             <Image
