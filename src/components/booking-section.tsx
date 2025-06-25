@@ -2,12 +2,13 @@
 "use client";
 
 import { useEffect, useRef, ChangeEvent } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, ControllerRenderProps } from "react-hook-form";
 import * as z from "zod";
 import { format } from "date-fns";
-import { CalendarIcon, MapPin, Clock, Car } from "lucide-react";
+import { CalendarIcon, MapPin, Clock } from "lucide-react";
 import usePlacesAutocomplete from "use-places-autocomplete";
 
 import { Button } from "@/components/ui/button";
@@ -24,10 +25,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 const bookingFormSchema = z.object({
-  vehicleName: z.string().optional(),
+  vehicleName: z.string().min(1, { message: "Please select a vehicle." }),
   travelArea: z.enum(["Metro Manila", "Province"], {
     required_error: "You need to select a travel area.",
   }),
@@ -45,6 +48,24 @@ const bookingFormSchema = z.object({
 });
 
 type BookingFormValues = z.infer<typeof bookingFormSchema>;
+
+const vehicles = [
+  {
+    name: "MG5 CVT Core",
+    image: "https://placehold.co/400x400.png",
+    hint: "sedan car",
+  },
+  {
+    name: "Toyota Raize",
+    image: "https://placehold.co/400x400.png",
+    hint: "suv car",
+  },
+  {
+    name: "Honda Brio",
+    image: "https://placehold.co/400x400.png",
+    hint: "hatchback car",
+  },
+];
 
 const PlacesAutocompleteInput = ({ 
   field, 
@@ -170,27 +191,6 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <div className="space-y-8">
-                  {form.watch("vehicleName") && (
-                    <div className="md:col-span-2">
-                      <FormField
-                          control={form.control}
-                          name="vehicleName"
-                          render={({ field }) => (
-                          <FormItem>
-                              <FormLabel>Selected Vehicle</FormLabel>
-                              <FormControl>
-                                  <div className="relative">
-                                      <Car className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                      <Input {...field} className="pl-10 font-semibold" disabled />
-                                  </div>
-                              </FormControl>
-                              <FormMessage />
-                          </FormItem>
-                          )}
-                      />
-                    </div>
-                  )}
-
                   <FormField
                     control={form.control}
                     name="travelArea"
@@ -208,6 +208,51 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
                                 <TabsTrigger value="Province">Province</TabsTrigger>
                               </TabsList>
                            </Tabs>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="vehicleName"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel>Select a Vehicle</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            className="grid grid-cols-2 sm:grid-cols-3 gap-4"
+                          >
+                            {vehicles.map((vehicle) => (
+                              <div key={vehicle.name}>
+                                <RadioGroupItem value={vehicle.name} id={vehicle.name} className="peer sr-only" />
+                                <Label
+                                  htmlFor={vehicle.name}
+                                  className="block cursor-pointer"
+                                >
+                                  <Card className="overflow-hidden transition-all border-2 border-muted peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary hover:border-primary/50">
+                                    <CardContent className="p-0">
+                                      <div className="relative aspect-square w-full">
+                                        <Image
+                                          src={vehicle.image}
+                                          alt={vehicle.name}
+                                          data-ai-hint={vehicle.hint}
+                                          fill
+                                          className="object-cover"
+                                        />
+                                      </div>
+                                      <div className="p-2 text-center">
+                                        <p className="font-semibold text-sm">{vehicle.name}</p>
+                                      </div>
+                                    </CardContent>
+                                  </Card>
+                                </Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
