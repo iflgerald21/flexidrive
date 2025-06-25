@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useSearchParams } from 'next/navigation';
@@ -24,8 +25,8 @@ function BookingDetailsPageContent() {
   const { toast } = useToast();
 
   const vehicleName = searchParams.get('vehicleName') || 'N/A';
-  const pickupLocation = searchParams.get('pickupLocation') || 'N/A';
-  const dropoffLocation = searchParams.get('dropoffLocation') || 'N/A';
+  const travelArea = searchParams.get('travelArea') || 'N/A';
+  const travelDestination = searchParams.get('travelDestination') || 'N/A';
   const pickupDate = searchParams.get('pickupDate');
   const returnDate = searchParams.get('returnDate');
   const pickupTime = searchParams.get('pickupTime') || 'N/A';
@@ -45,8 +46,8 @@ function BookingDetailsPageContent() {
       clientInfo: values,
       bookingDetails: {
         vehicleName,
-        pickupLocation,
-        dropoffLocation,
+        travelArea,
+        travelDestination,
         pickupDate,
         returnDate,
         pickupTime,
@@ -147,15 +148,8 @@ function BookingDetailsPageContent() {
                 <div className="flex items-start gap-3">
                   <MapPin className="h-5 w-5 text-primary mt-1 shrink-0" />
                   <div className="space-y-1">
-                    <p className="font-semibold">Pickup</p>
-                    <p className="text-muted-foreground">{pickupLocation}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <MapPin className="h-5 w-5 text-primary mt-1 shrink-0" />
-                  <div className="space-y-1">
-                    <p className="font-semibold">Drop-off</p>
-                    <p className="text-muted-foreground">{dropoffLocation}</p>
+                    <p className="font-semibold">Travel Destination</p>
+                    <p className="text-muted-foreground">{travelDestination} ({travelArea})</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useRef, ChangeEvent } from "react";
@@ -22,15 +23,16 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 const bookingFormSchema = z.object({
   vehicleName: z.string().optional(),
-  pickupLocation: z.string().min(2, {
-    message: "Pickup location must be at least 2 characters.",
+  travelArea: z.enum(["Metro Manila", "Province"], {
+    required_error: "You need to select a travel area.",
   }),
-  dropoffLocation: z.string().min(2, {
-    message: "Drop-off location must be at least 2 characters.",
+  travelDestination: z.string().min(2, {
+    message: "Travel destination must be at least 2 characters.",
   }),
   pickupDate: z.date({
     required_error: "A pickup date is required.",
@@ -48,7 +50,7 @@ const PlacesAutocompleteInput = ({
   field, 
   placeholder 
 }: { 
-  field: ControllerRenderProps<BookingFormValues, "pickupLocation"> | ControllerRenderProps<BookingFormValues, "dropoffLocation">;
+  field: ControllerRenderProps<BookingFormValues, "travelDestination">;
   placeholder: string;
 }) => {
   const {
@@ -130,8 +132,8 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
       vehicleName: "",
-      pickupLocation: "",
-      dropoffLocation: "",
+      travelArea: "Metro Manila",
+      travelDestination: "",
       pickupTime: "10:00",
       returnTime: "10:00"
     },
@@ -147,8 +149,8 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
   function onSubmit(values: BookingFormValues) {
     const params = new URLSearchParams();
     if (values.vehicleName) params.append("vehicleName", values.vehicleName);
-    params.append("pickupLocation", values.pickupLocation);
-    params.append("dropoffLocation", values.dropoffLocation);
+    params.append("travelArea", values.travelArea);
+    params.append("travelDestination", values.travelDestination);
     if (values.pickupDate) params.append("pickupDate", values.pickupDate.toISOString());
     if (values.returnDate) params.append("returnDate", values.returnDate.toISOString());
     params.append("pickupTime", values.pickupTime);
@@ -167,7 +169,7 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-8">
                   {form.watch("vehicleName") && (
                     <div className="md:col-span-2">
                       <FormField
@@ -188,146 +190,160 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
                       />
                     </div>
                   )}
+
                   <FormField
                     control={form.control}
-                    name="pickupLocation"
+                    name="travelArea"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Pickup Location</FormLabel>
+                      <FormItem className="space-y-3">
+                        <FormLabel>Travel Area</FormLabel>
                         <FormControl>
-                            <PlacesAutocompleteInput field={field} placeholder="e.g., Airport, City Center" />
+                           <Tabs
+                            defaultValue={field.value}
+                            onValueChange={field.onChange}
+                            className="w-full"
+                           >
+                              <TabsList className="grid w-full grid-cols-2">
+                                <TabsTrigger value="Metro Manila">Metro Manila</TabsTrigger>
+                                <TabsTrigger value="Province">Province</TabsTrigger>
+                              </TabsList>
+                           </Tabs>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
-                    name="dropoffLocation"
+                    name="travelDestination"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Drop-off Location</FormLabel>
+                        <FormLabel>Travel Destination</FormLabel>
                         <FormControl>
-                            <PlacesAutocompleteInput field={field} placeholder="e.g., Hotel, Train Station" />
+                            <PlacesAutocompleteInput field={field} placeholder="e.g., Tagaytay, BGC" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="pickupDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Pickup Date</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) =>
-                                date < new Date(new Date().setHours(0,0,0,0))
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="returnDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Return Date</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) =>
-                                date < (form.getValues("pickupDate") || new Date(new Date().setHours(0,0,0,0)))
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                   <FormField
-                    control={form.control}
-                    name="pickupTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Pickup Time</FormLabel>
-                        <FormControl>
-                            <div className="relative">
-                                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input type="time" {...field} className="pl-10" />
-                            </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                   <FormField
-                    control={form.control}
-                    name="returnTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Return Time</FormLabel>
-                        <FormControl>
-                            <div className="relative">
-                                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input type="time" {...field} className="pl-10" />
-                            </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <FormField
+                      control={form.control}
+                      name="pickupDate"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Pickup Date</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, "PPP")
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) =>
+                                  date < new Date(new Date().setHours(0,0,0,0))
+                                }
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="returnDate"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Return Date</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, "PPP")
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) =>
+                                  date < (form.getValues("pickupDate") || new Date(new Date().setHours(0,0,0,0)))
+                                }
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="pickupTime"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Pickup Time</FormLabel>
+                          <FormControl>
+                              <div className="relative">
+                                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                  <Input type="time" {...field} className="pl-10" />
+                              </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="returnTime"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Return Time</FormLabel>
+                          <FormControl>
+                              <div className="relative">
+                                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                  <Input type="time" {...field} className="pl-10" />
+                              </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
                 <Button type="submit" size="lg" className="w-full bg-primary hover:bg-accent text-primary-foreground font-bold text-lg">
                   Book Now
