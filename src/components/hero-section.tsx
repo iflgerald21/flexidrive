@@ -14,17 +14,17 @@ const heroImages = [
   {
     src: "https://placehold.co/1920x1080.png",
     alt: "Sleek red MG5 Core sedan parked on a city street at dusk",
-    hint: "red sedan city",
+    hint: "red car city",
   },
   {
     src: "https://placehold.co/1920x1080.png",
     alt: "Interior view of the MG5 Core with its modern dashboard and tech features",
-    hint: "car interior dashboard",
+    hint: "car dashboard night",
   },
   {
     src: "https://placehold.co/1920x1080.png",
     alt: "Close-up of the MG5 Core's distinctive front grille and LED headlights",
-    hint: "car headlight grille",
+    hint: "car headlight front",
   },
 ];
 
