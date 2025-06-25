@@ -3,70 +3,27 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-
-const heroImages = [
-  {
+const heroImage = {
     src: "/image.png",
     alt: "Side view of a red MG5 CVT Core",
     hint: "red car side",
-  },
-  {
-    src: "https://placehold.co/1920x1080.png",
-    alt: "A sleek red sedan parked on a city street at dusk",
-    hint: "red car",
-  },
-  {
-    src: "https://placehold.co/1920x1080.png",
-    alt: "A modern car dashboard lit up at night",
-    hint: "car dashboard",
-  },
-  {
-    src: "https://placehold.co/1920x1080.png",
-    alt: "A close-up of a car's futuristic LED headlights",
-    hint: "car headlight",
-  },
-];
+};
 
 export default function HeroSection() {
   return (
     <section className="relative h-[60vh] md:h-[80vh] w-full text-white">
-      <Swiper
-        spaceBetween={0}
-        centeredSlides={true}
-        autoplay={{
-          delay: 3500,
-          disableOnInteraction: false,
-        }}
-        pagination={{
-          clickable: true,
-        }}
-        navigation={true}
-        modules={[Autoplay, Pagination, Navigation]}
-        className="h-full w-full"
-        loop={true}
-      >
-        {heroImages.map((image, index) => (
-          <SwiperSlide key={index}>
-            <div className="h-full w-full relative">
-              <Image
-                src={image.src}
-                alt={image.alt}
-                data-ai-hint={image.hint}
-                fill
-                className="object-cover"
-                priority={index === 0}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      <div className="h-full w-full relative">
+        <Image
+          src={heroImage.src}
+          alt={heroImage.alt}
+          data-ai-hint={heroImage.hint}
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+      </div>
       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center p-4">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-headline tracking-tight text-shadow-lg">
           Experience Smart Driving with the MG5 Core

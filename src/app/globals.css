@@ -60,20 +60,3 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
-/* Swiper custom styles */
-.swiper-button-next,
-.swiper-button-prev {
-  color: hsl(var(--primary)) !important;
-  z-index: 20;
-}
-
-.swiper-button-next:after,
-.swiper-button-prev:after {
-  font-size: 1.5rem !important;
-  font-weight: bold;
-}
-
-.swiper-pagination-bullet-active {
-  background-color: hsl(var(--primary)) !important;
-}
