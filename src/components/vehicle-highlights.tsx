@@ -12,7 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Fuel, Gauge } from "lucide-react";
+import { Fuel, Gauge, Users, Car } from "lucide-react";
 
 const vehicles = [
   {
@@ -23,6 +23,8 @@ const vehicles = [
     fuel: "Gasoline",
     rate: "1,500",
     description: "A stylish and feature-packed sedan, the MG5 Core offers a premium driving experience with its comfortable interior and modern technology. Perfect for city driving and long trips.",
+    capacity: 5,
+    type: "Sedan",
   },
 ];
 
@@ -70,6 +72,10 @@ export default function VehicleHighlights({ onBookNow }: { onBookNow: (vehicleNa
                     <div className="flex items-center gap-2">
                       <Fuel className="h-5 w-5 text-primary" />
                       <span>{vehicle.fuel}</span>
+                    </div>
+                     <div className="flex items-center gap-2">
+                      <Users className="h-5 w-5 text-primary" />
+                      <span>{vehicle.capacity} seats</span>
                     </div>
                   </div>
                 </CardContent>
@@ -119,6 +125,14 @@ export default function VehicleHighlights({ onBookNow }: { onBookNow: (vehicleNa
                     <div className="flex items-center gap-2 p-3 bg-muted rounded-md">
                         <Fuel className="h-5 w-5 text-primary" />
                         <strong>Fuel:</strong> {selectedVehicle.fuel}
+                    </div>
+                    <div className="flex items-center gap-2 p-3 bg-muted rounded-md">
+                        <Users className="h-5 w-5 text-primary" />
+                        <strong>Capacity:</strong> {selectedVehicle.capacity} seats
+                    </div>
+                    <div className="flex items-center gap-2 p-3 bg-muted rounded-md">
+                        <Car className="h-5 w-5 text-primary" />
+                        <strong>Type:</strong> {selectedVehicle.type}
                     </div>
                 </div>
             </div>

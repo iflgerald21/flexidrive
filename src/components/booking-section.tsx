@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, ControllerRenderProps } from "react-hook-form";
 import * as z from "zod";
 import { format } from "date-fns";
-import { CalendarIcon, MapPin, Clock } from "lucide-react";
+import { CalendarIcon, MapPin, Clock, Users, Fuel } from "lucide-react";
 import usePlacesAutocomplete from "use-places-autocomplete";
 
 import { Button } from "@/components/ui/button";
@@ -54,16 +54,28 @@ const vehicles = [
     name: "MG5 CVT Core",
     image: "https://placehold.co/200x200.png",
     hint: "sedan car",
+    capacity: 5,
+    fuel: "Gasoline",
+    price: "1,500",
+    type: "Sedan",
   },
   {
     name: "Toyota Raize",
     image: "https://placehold.co/200x200.png",
     hint: "suv car",
+    capacity: 5,
+    fuel: "Gasoline",
+    price: "1,800",
+    type: "SUV",
   },
   {
     name: "Honda Brio",
     image: "https://placehold.co/200x200.png",
     hint: "hatchback car",
+    capacity: 5,
+    fuel: "Gasoline",
+    price: "1,200",
+    type: "Hatchback",
   },
 ];
 
@@ -233,9 +245,9 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
                                   htmlFor={vehicle.name}
                                   className="block cursor-pointer"
                                 >
-                                  <Card className="w-40 overflow-hidden transition-all border-2 border-muted peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary hover:border-primary/50">
+                                  <Card className="w-48 overflow-hidden transition-all border-2 border-muted peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary hover:border-primary/50">
                                     <CardContent className="p-0">
-                                      <div className="relative aspect-square w-full">
+                                      <div className="relative aspect-video w-full">
                                         <Image
                                           src={vehicle.image}
                                           alt={vehicle.name}
@@ -244,8 +256,23 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
                                           className="object-cover"
                                         />
                                       </div>
-                                      <div className="p-2 text-center">
-                                        <p className="font-semibold text-sm">{vehicle.name}</p>
+                                      <div className="p-3">
+                                        <p className="font-bold text-base truncate">{vehicle.name}</p>
+                                        <p className="text-xs text-muted-foreground mb-2">{vehicle.type}</p>
+                                        <div className="flex justify-between items-center text-xs text-muted-foreground mb-2">
+                                            <div className="flex items-center gap-1">
+                                                <Users className="h-4 w-4 text-primary" />
+                                                <span>{vehicle.capacity} seats</span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <Fuel className="h-4 w-4 text-primary" />
+                                                <span>{vehicle.fuel}</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span className="font-bold text-primary text-base">₱{vehicle.price}</span>
+                                            <span className="text-xs text-muted-foreground">/12hrs</span>
+                                        </div>
                                       </div>
                                     </CardContent>
                                   </Card>
