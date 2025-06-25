@@ -249,7 +249,7 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
                   />
                 </div>
                 <Button type="submit" size="lg" className="w-full bg-primary hover:bg-accent text-primary-foreground font-bold text-lg">
-                  Search Vehicles
+                  Book Now
                 </Button>
               </form>
             </Form>
