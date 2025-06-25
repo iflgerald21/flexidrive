@@ -8,46 +8,46 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 20 4% 15%;
-    --card: 0 0% 100%;
-    --card-foreground: 20 4% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 20 4% 15%;
+    --background: 145 30% 97%;
+    --foreground: 145 10% 10%;
+    --card: 145 30% 99%;
+    --card-foreground: 145 10% 10%;
+    --popover: 145 30% 99%;
+    --popover-foreground: 145 10% 10%;
     --primary: 145 63% 42%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 20 4% 15%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 20 4% 45%;
-    --accent: 150 56% 52%;
+    --secondary: 145 25% 94%;
+    --secondary-foreground: 145 10% 30%;
+    --muted: 145 25% 94%;
+    --muted-foreground: 145 10% 45%;
+    --accent: 145 56% 52%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
+    --border: 145 20% 88%;
+    --input: 145 20% 88%;
     --ring: 145 63% 42%;
     --radius: 0.5rem;
   }
   .dark {
-    --background: 20 4% 15%;
-    --foreground: 0 0% 98%;
-    --card: 20 4% 18%;
-    --card-foreground: 0 0% 98%;
-    --popover: 20 4% 15%;
-    --popover-foreground: 0 0% 98%;
+    --background: 145 10% 10%;
+    --foreground: 145 20% 95%;
+    --card: 145 10% 12%;
+    --card-foreground: 145 20% 95%;
+    --popover: 145 10% 10%;
+    --popover-foreground: 145 20% 95%;
     --primary: 145 63% 42%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 25%;
+    --secondary: 145 10% 18%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 25%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 150 56% 52%;
+    --muted: 145 10% 18%;
+    --muted-foreground: 145 10% 60%;
+    --accent: 145 56% 52%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 25%;
-    --input: 0 0% 25%;
+    --border: 145 10% 25%;
+    --input: 145 10% 25%;
     --ring: 145 63% 42%;
   }
 }
