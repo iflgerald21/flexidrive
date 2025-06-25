@@ -1,10 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { format } from "date-fns";
-import { CalendarIcon, MapPin, Clock } from "lucide-react";
+import { CalendarIcon, MapPin, Clock, Car } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +24,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
 const bookingFormSchema = z.object({
+  vehicleName: z.string().optional(),
   pickupLocation: z.string().min(2, {
     message: "Pickup location must be at least 2 characters.",
   }),
@@ -39,12 +41,13 @@ const bookingFormSchema = z.object({
   returnTime: z.string().min(1, { message: "Return time is required." }),
 });
 
-export default function BookingSection() {
-    const { toast } = useToast();
+export default function BookingSection({ vehicleToBook }: { vehicleToBook: string }) {
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof bookingFormSchema>>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
+      vehicleName: "",
       pickupLocation: "",
       dropoffLocation: "",
       pickupTime: "10:00",
@@ -52,10 +55,17 @@ export default function BookingSection() {
     },
   });
 
+  useEffect(() => {
+    if (vehicleToBook) {
+        form.setValue("vehicleName", vehicleToBook);
+    }
+  }, [vehicleToBook, form]);
+
+
   function onSubmit(values: z.infer<typeof bookingFormSchema>) {
     toast({
-        title: "Booking Search Initiated",
-        description: "Searching for available vehicles with your criteria.",
+        title: `Searching for ${values.vehicleName || 'available vehicles'}`,
+        description: "Applying your booking criteria.",
     });
     console.log(values);
   }
@@ -71,6 +81,26 @@ export default function BookingSection() {
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {form.watch("vehicleName") && (
+                    <div className="md:col-span-2">
+                      <FormField
+                          control={form.control}
+                          name="vehicleName"
+                          render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Selected Vehicle</FormLabel>
+                              <FormControl>
+                                  <div className="relative">
+                                      <Car className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                      <Input {...field} className="pl-10 font-semibold" disabled />
+                                  </div>
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                          )}
+                      />
+                    </div>
+                  )}
                   <FormField
                     control={form.control}
                     name="pickupLocation"

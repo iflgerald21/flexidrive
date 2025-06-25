@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import VehicleHighlights from '@/components/vehicle-highlights';
 import BookingSection from '@/components/booking-section';
@@ -12,11 +13,13 @@ const HeroSection = dynamic(() => import('@/components/hero-section'), {
 });
 
 export default function Home() {
+  const [vehicleToBook, setVehicleToBook] = useState('');
+
   return (
     <>
       <HeroSection />
-      <VehicleHighlights />
-      <BookingSection />
+      <VehicleHighlights onBookNow={setVehicleToBook} />
+      <BookingSection vehicleToBook={vehicleToBook} />
       <WhyChooseUs />
       <Testimonials />
     </>

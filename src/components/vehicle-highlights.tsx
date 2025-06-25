@@ -28,12 +28,15 @@ const vehicles = [
 
 type Vehicle = (typeof vehicles)[0];
 
-export default function VehicleHighlights() {
+export default function VehicleHighlights({ onBookNow }: { onBookNow: (vehicleName: string) => void }) {
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
 
-  const handleBookNow = () => {
+  const handleBookNow = (vehicleName: string) => {
+    onBookNow(vehicleName);
     setSelectedVehicle(null);
-    document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   }
 
   return (
@@ -124,7 +127,7 @@ export default function VehicleHighlights() {
                     ₱{selectedVehicle.rate}
                     <span className="text-sm font-normal text-muted-foreground">/12hrs</span>
                 </div>
-                <Button onClick={handleBookNow} size="lg" className="bg-primary hover:bg-accent text-primary-foreground font-bold w-full sm:w-auto">Book Now</Button>
+                <Button onClick={() => handleBookNow(selectedVehicle.name)} size="lg" className="bg-primary hover:bg-accent text-primary-foreground font-bold w-full sm:w-auto">Book Now</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
