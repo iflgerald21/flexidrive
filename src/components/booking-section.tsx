@@ -34,6 +34,9 @@ const bookingFormSchema = z.object({
   travelArea: z.enum(["Metro Manila", "Province"], {
     required_error: "You need to select a travel area.",
   }),
+  rentalDuration: z.enum(["12-hours", "24-hours"], {
+    required_error: "You need to select a rental duration.",
+  }),
   travelDestination: z.string().min(2, {
     message: "Travel destination must be at least 2 characters.",
   }),
@@ -56,7 +59,8 @@ const vehicles = [
     hint: "sedan car",
     capacity: 5,
     fuel: "Gasoline",
-    price: "1,500",
+    price12h: "1,500",
+    price24h: "2,500",
     type: "Sedan",
   },
   {
@@ -65,7 +69,8 @@ const vehicles = [
     hint: "suv car",
     capacity: 5,
     fuel: "Gasoline",
-    price: "1,800",
+    price12h: "1,800",
+    price24h: "3,000",
     type: "SUV",
   },
   {
@@ -74,7 +79,8 @@ const vehicles = [
     hint: "hatchback car",
     capacity: 5,
     fuel: "Gasoline",
-    price: "1,200",
+    price12h: "1,200",
+    price24h: "2,000",
     type: "Hatchback",
   },
 ];
@@ -166,11 +172,14 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
     defaultValues: {
       vehicleName: "",
       travelArea: "Metro Manila",
+      rentalDuration: "12-hours",
       travelDestination: "",
       pickupTime: "10:00",
       returnTime: "10:00"
     },
   });
+
+  const rentalDuration = form.watch("rentalDuration");
 
   useEffect(() => {
     if (vehicleToBook) {
@@ -183,6 +192,7 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
     const params = new URLSearchParams();
     if (values.vehicleName) params.append("vehicleName", values.vehicleName);
     params.append("travelArea", values.travelArea);
+    params.append("rentalDuration", values.rentalDuration);
     params.append("travelDestination", values.travelDestination);
     if (values.pickupDate) params.append("pickupDate", values.pickupDate.toISOString());
     if (values.returnDate) params.append("returnDate", values.returnDate.toISOString());
@@ -238,48 +248,75 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
                             value={field.value}
                             className="grid grid-cols-2 sm:grid-cols-3 gap-4 justify-items-center"
                           >
-                            {vehicles.map((vehicle) => (
-                              <div key={vehicle.name}>
-                                <RadioGroupItem value={vehicle.name} id={vehicle.name} className="peer sr-only" />
-                                <Label
-                                  htmlFor={vehicle.name}
-                                  className="block cursor-pointer"
-                                >
-                                  <Card className="w-48 overflow-hidden transition-all border-2 border-muted peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary hover:border-primary/50">
-                                    <CardContent className="p-0">
-                                      <div className="relative aspect-video w-full">
-                                        <Image
-                                          src={vehicle.image}
-                                          alt={vehicle.name}
-                                          data-ai-hint={vehicle.hint}
-                                          fill
-                                          className="object-cover"
-                                        />
-                                      </div>
-                                      <div className="p-3">
-                                        <p className="font-bold text-base truncate">{vehicle.name}</p>
-                                        <p className="text-xs text-muted-foreground mb-2">{vehicle.type}</p>
-                                        <div className="flex justify-between items-center text-xs text-muted-foreground mb-2">
-                                            <div className="flex items-center gap-1">
-                                                <Users className="h-4 w-4 text-primary" />
-                                                <span>{vehicle.capacity} seats</span>
+                            {vehicles.map((vehicle) => {
+                                const price = rentalDuration === '12-hours' ? vehicle.price12h : vehicle.price24h;
+                                const durationLabel = rentalDuration === '12-hours' ? '/12hrs' : '/24hrs';
+                                return (
+                                  <div key={vehicle.name}>
+                                    <RadioGroupItem value={vehicle.name} id={vehicle.name} className="peer sr-only" />
+                                    <Label
+                                      htmlFor={vehicle.name}
+                                      className="block cursor-pointer"
+                                    >
+                                      <Card className="w-48 overflow-hidden transition-all border-2 border-muted peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-primary hover:border-primary/50">
+                                        <CardContent className="p-0">
+                                          <div className="relative aspect-video w-full">
+                                            <Image
+                                              src={vehicle.image}
+                                              alt={vehicle.name}
+                                              data-ai-hint={vehicle.hint}
+                                              fill
+                                              className="object-cover"
+                                            />
+                                          </div>
+                                          <div className="p-3">
+                                            <p className="font-bold text-base truncate">{vehicle.name}</p>
+                                            <p className="text-xs text-muted-foreground mb-2">{vehicle.type}</p>
+                                            <div className="flex justify-between items-center text-xs text-muted-foreground mb-2">
+                                                <div className="flex items-center gap-1">
+                                                    <Users className="h-4 w-4 text-primary" />
+                                                    <span>{vehicle.capacity} seats</span>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <Fuel className="h-4 w-4 text-primary" />
+                                                    <span>{vehicle.fuel}</span>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-1">
-                                                <Fuel className="h-4 w-4 text-primary" />
-                                                <span>{vehicle.fuel}</span>
+                                            <div>
+                                                <span className="font-bold text-primary text-base">₱{price}</span>
+                                                <span className="text-xs text-muted-foreground">{durationLabel}</span>
                                             </div>
-                                        </div>
-                                        <div>
-                                            <span className="font-bold text-primary text-base">₱{vehicle.price}</span>
-                                            <span className="text-xs text-muted-foreground">/12hrs</span>
-                                        </div>
-                                      </div>
-                                    </CardContent>
-                                  </Card>
-                                </Label>
-                              </div>
-                            ))}
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+                                    </Label>
+                                  </div>
+                                )
+                            })}
                           </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="rentalDuration"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel>Rental Duration</FormLabel>
+                        <FormControl>
+                          <Tabs
+                            defaultValue={field.value}
+                            onValueChange={field.onChange}
+                            className="w-full"
+                          >
+                            <TabsList className="grid w-full grid-cols-2">
+                              <TabsTrigger value="12-hours">12 Hours</TabsTrigger>
+                              <TabsTrigger value="24-hours">24 Hours</TabsTrigger>
+                            </TabsList>
+                          </Tabs>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

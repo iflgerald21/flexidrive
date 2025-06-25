@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { format } from 'date-fns';
-import { User, Mail, Phone, Car, MapPin, Clock } from 'lucide-react';
+import { User, Mail, Phone, Car, MapPin, Clock, Timer } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 const clientInfoSchema = z.object({
@@ -31,6 +31,7 @@ function BookingDetailsPageContent() {
   const returnDate = searchParams.get('returnDate');
   const pickupTime = searchParams.get('pickupTime') || 'N/A';
   const returnTime = searchParams.get('returnTime') || 'N/A';
+  const rentalDuration = searchParams.get('rentalDuration');
 
   const form = useForm<z.infer<typeof clientInfoSchema>>({
     resolver: zodResolver(clientInfoSchema),
@@ -51,7 +52,8 @@ function BookingDetailsPageContent() {
         pickupDate,
         returnDate,
         pickupTime,
-        returnTime
+        returnTime,
+        rentalDuration,
       }
     };
     
@@ -164,6 +166,15 @@ function BookingDetailsPageContent() {
                     </p>
                   </div>
                 </div>
+                {rentalDuration && (
+                  <div className="flex items-start gap-3">
+                    <Timer className="h-5 w-5 text-primary mt-1 shrink-0" />
+                    <div className="space-y-1">
+                      <p className="font-semibold">Rental Duration</p>
+                      <p className="text-muted-foreground">{rentalDuration === '12-hours' ? '12 Hours' : '24 Hours'}</p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>

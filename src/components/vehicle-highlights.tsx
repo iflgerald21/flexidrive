@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -21,7 +22,8 @@ const vehicles = [
     hint: "sedan car",
     transmission: "Automatic",
     fuel: "Gasoline",
-    rate: "1,500",
+    price12h: "1,500",
+    price24h: "2,500",
     description: "A stylish and feature-packed sedan, the MG5 Core offers a premium driving experience with its comfortable interior and modern technology. Perfect for city driving and long trips.",
     capacity: 5,
     type: "Sedan",
@@ -81,7 +83,7 @@ export default function VehicleHighlights({ onBookNow }: { onBookNow: (vehicleNa
                 </CardContent>
                 <CardFooter className="flex justify-between items-center bg-background/50 p-4">
                   <div>
-                    <span className="text-2xl font-bold text-primary">₱{vehicle.rate}</span>
+                    <span className="text-2xl font-bold text-primary">₱{vehicle.price12h}</span>
                     <span className="text-muted-foreground">/12hrs</span>
                   </div>
                   <Button 
@@ -138,7 +140,7 @@ export default function VehicleHighlights({ onBookNow }: { onBookNow: (vehicleNa
             </div>
             <DialogFooter className="flex-col-reverse sm:flex-row sm:justify-between items-center gap-4">
                 <div className="text-2xl font-bold text-primary text-center sm:text-left">
-                    ₱{selectedVehicle.rate}
+                    ₱{selectedVehicle.price12h}
                     <span className="text-sm font-normal text-muted-foreground">/12hrs</span>
                 </div>
                 <Button onClick={() => handleBookNow(selectedVehicle.name)} size="lg" className="bg-primary hover:bg-accent text-primary-foreground font-bold w-full sm:w-auto">Book Now</Button>
