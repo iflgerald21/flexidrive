@@ -21,7 +21,7 @@ const vehicles = [
     hint: "sedan car",
     transmission: "Automatic",
     fuel: "Gasoline",
-    rate: "2,500",
+    rate: "1,500",
     description: "A stylish and feature-packed sedan, the MG5 Core offers a premium driving experience with its comfortable interior and modern technology. Perfect for city driving and long trips.",
   },
 ];
@@ -73,7 +73,7 @@ export default function VehicleHighlights() {
                 <CardFooter className="flex justify-between items-center bg-background/50 p-4">
                   <div>
                     <span className="text-2xl font-bold text-primary">₱{vehicle.rate}</span>
-                    <span className="text-muted-foreground">/day</span>
+                    <span className="text-muted-foreground">/12hrs</span>
                   </div>
                   <Button 
                     variant="outline" 
@@ -122,7 +122,7 @@ export default function VehicleHighlights() {
             <DialogFooter className="flex-col-reverse sm:flex-row sm:justify-between items-center gap-4">
                 <div className="text-2xl font-bold text-primary text-center sm:text-left">
                     ₱{selectedVehicle.rate}
-                    <span className="text-sm font-normal text-muted-foreground">/day</span>
+                    <span className="text-sm font-normal text-muted-foreground">/12hrs</span>
                 </div>
                 <Button onClick={handleBookNow} size="lg" className="bg-primary hover:bg-accent text-primary-foreground font-bold w-full sm:w-auto">Book Now</Button>
             </DialogFooter>
