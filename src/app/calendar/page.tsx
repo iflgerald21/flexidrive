@@ -1,18 +1,21 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { Car } from 'lucide-react';
 import { addDays, isSameDay, startOfDay, endOfDay, format, parse, isWithinInterval, addMinutes } from 'date-fns';
 import type { DayContentProps } from 'react-day-picker';
+import { cn } from "@/lib/utils";
 
 import { Calendar } from '@/components/ui/calendar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableCaption } from "@/components/ui/table";
+import { Badge } from '@/components/ui/badge';
 
 // --- More Detailed Mock Data ---
 const vehicles = [
-  { name: 'MG5 CVT Core' },
-  { name: 'Toyota Raize' },
-  { name: 'Honda Brio' },
+  { name: 'MG5 CVT Core', price12h: '1,500', price24h: '2,500' },
+  { name: 'Toyota Raize', price12h: '1,800', price24h: '3,000' },
+  { name: 'Honda Brio', price12h: '1,200', price24h: '2,000' },
 ];
 
 const bookings = [
@@ -44,10 +47,14 @@ const bookedDates = Array.from(new Set(bookings.flatMap(booking => {
 })));
 
 type AvailabilitySlot = { start: Date; end: Date };
-type VehicleAvailability = {
+type VehicleDailyStatus = {
   vehicleName: string;
+  price12h: string;
+  price24h: string;
+  status: 'Vacant' | 'Rented';
   availableSlots: AvailabilitySlot[];
 };
+
 
 // --- Calendar Page Component ---
 
@@ -65,38 +72,34 @@ function CustomDayContent(props: DayContentProps) {
 
 export default function CalendarPage() {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const [availability, setAvailability] = useState<VehicleAvailability[]>([]);
+  const [dailyStatuses, setDailyStatuses] = useState<VehicleDailyStatus[]>([]);
 
   useEffect(() => {
     if (!date) {
-      setAvailability([]);
+      setDailyStatuses([]);
       return;
     }
 
-    const calculateAvailability = (selectedDate: Date): VehicleAvailability[] => {
-      const results: VehicleAvailability[] = [];
+    const calculateDailyStatuses = (selectedDate: Date): VehicleDailyStatus[] => {
       const dayStart = startOfDay(selectedDate);
       const dayEnd = endOfDay(selectedDate);
 
-      for (const vehicle of vehicles) {
-        // 1. Find all bookings for this vehicle that overlap with the selected date
+      return vehicles.map(vehicle => {
         const relevantBookings = bookings.filter(b => 
           b.vehicle === vehicle.name && 
           isWithinInterval(selectedDate, { start: startOfDay(b.startDate), end: startOfDay(b.endDate) })
         );
 
-        // 2. Create a list of "busy" time intervals for the selected date
         const busyIntervals: AvailabilitySlot[] = relevantBookings.map(b => {
           const bookingStartDateTime = parse(b.startTime, 'HH:mm', b.startDate);
           const bookingEndDateTime = parse(b.endTime, 'HH:mm', b.endDate);
 
           const start = bookingStartDateTime < dayStart ? dayStart : bookingStartDateTime;
-          const end = bookingEndDateTime > dayEnd ? dayEnd : bookingEndDateTime;
+          const end = bookingEndDateTime > dayEnd ? addMinutes(dayEnd, 1) : bookingEndDateTime;
           
           return { start, end };
         }).sort((a, b) => a.start.getTime() - b.start.getTime());
 
-        // 3. Calculate "free" intervals by finding the gaps
         const freeSlots: AvailabilitySlot[] = [];
         let lastBusyEnd = dayStart;
 
@@ -110,21 +113,23 @@ export default function CalendarPage() {
         }
 
         if (lastBusyEnd < dayEnd) {
-          // Add a minute to dayEnd for correct upper bound
           freeSlots.push({ start: lastBusyEnd, end: addMinutes(dayEnd, 1) }); 
         }
+        
+        const compactedFreeSlots = freeSlots.filter(slot => slot.start.getTime() < slot.end.getTime());
+        const isAvailable = compactedFreeSlots.length > 0;
 
-        if(freeSlots.length > 0) {
-            results.push({
-              vehicleName: vehicle.name,
-              availableSlots: freeSlots
-            });
-        }
-      }
-      return results;
+        return {
+          vehicleName: vehicle.name,
+          price12h: vehicle.price12h,
+          price24h: vehicle.price24h,
+          status: isAvailable ? 'Vacant' : 'Rented',
+          availableSlots: compactedFreeSlots,
+        };
+      });
     };
 
-    setAvailability(calculateAvailability(date));
+    setDailyStatuses(calculateDailyStatuses(date));
   }, [date]);
 
   const bookedModifier = { booked: bookedDates };
@@ -166,42 +171,52 @@ export default function CalendarPage() {
             </div>
           </div>
 
-          <div className="w-full lg:max-w-xl flex-grow">
+          <div className="w-full lg:max-w-3xl flex-grow">
             {date && (
               <h2 className="text-2xl font-bold font-headline mb-4">
                 Availability for {format(date, 'PPP')}
               </h2>
             )}
-            {date && availability.length > 0 ? (
+            {date && dailyStatuses.length > 0 ? (
               <Table className="border rounded-lg shadow-sm">
-                <TableCaption>Time slots are shown for available vehicles on the selected date.</TableCaption>
+                <TableCaption>Daily availability status for all vehicles.</TableCaption>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[200px]">Vehicle</TableHead>
-                    <TableHead>Available Time Slots</TableHead>
+                    <TableHead className="w-[150px]">Vehicle</TableHead>
+                    <TableHead>12-Hour Rate</TableHead>
+                    <TableHead>24-Hour Rate</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Available Slots</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {availability.map(({ vehicleName, availableSlots }) => (
+                  {dailyStatuses.map(({ vehicleName, price12h, price24h, status, availableSlots }) => (
                     <TableRow key={vehicleName}>
                       <TableCell className="font-medium">{vehicleName}</TableCell>
+                      <TableCell>₱{price12h}</TableCell>
+                      <TableCell>₱{price24h}</TableCell>
                       <TableCell>
-                        <div className="flex flex-col gap-1">
-                          {availableSlots.map((slot, index) => (
-                              <span key={index}>
-                                {format(slot.start, 'p')} - {format(slot.end, 'p')}
-                              </span>
-                          ))}
-                        </div>
+                        <Badge variant={status === 'Vacant' ? 'default' : 'destructive'}>
+                          {status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {status === 'Vacant' ? (
+                          <div className="flex flex-col gap-1 text-xs">
+                            {availableSlots.map((slot, index) => (
+                                <span key={index}>
+                                  {format(slot.start, 'p')} - {format(slot.end, 'p')}
+                                </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">N/A</span>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-            ) : date ? (
-              <div className="p-8 text-center border rounded-lg shadow-sm bg-muted/50">
-                <p className="text-muted-foreground">No available time slots for the selected date. The vehicles are fully booked.</p>
-              </div>
             ) : (
                  <div className="p-8 text-center border rounded-lg shadow-sm bg-muted/50">
                     <p className="text-muted-foreground">Please select a date to view availability.</p>
