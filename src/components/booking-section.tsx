@@ -52,17 +52,17 @@ type BookingFormValues = z.infer<typeof bookingFormSchema>;
 const vehicles = [
   {
     name: "MG5 CVT Core",
-    image: "https://placehold.co/400x400.png",
+    image: "https://placehold.co/200x200.png",
     hint: "sedan car",
   },
   {
     name: "Toyota Raize",
-    image: "https://placehold.co/400x400.png",
+    image: "https://placehold.co/200x200.png",
     hint: "suv car",
   },
   {
     name: "Honda Brio",
-    image: "https://placehold.co/400x400.png",
+    image: "https://placehold.co/200x200.png",
     hint: "hatchback car",
   },
 ];
