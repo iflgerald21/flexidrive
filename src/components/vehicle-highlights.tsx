@@ -43,9 +43,9 @@ export default function VehicleHighlights() {
           <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-12">
             Our Featured Vehicles
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="flex justify-center">
             {vehicles.map((vehicle) => (
-              <Card key={vehicle.name} className="overflow-hidden shadow-lg hover:shadow-primary/20 transition-shadow duration-300 flex flex-col">
+              <Card key={vehicle.name} className="overflow-hidden shadow-lg hover:shadow-primary/20 transition-shadow duration-300 flex flex-col w-full max-w-sm">
                 <div className="relative h-64 w-full">
                   <Image
                     src={vehicle.image}
