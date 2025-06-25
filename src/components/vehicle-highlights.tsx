@@ -24,24 +24,6 @@ const vehicles = [
     rate: "2,500",
     description: "A stylish and feature-packed sedan, the MG5 Core offers a premium driving experience with its comfortable interior and modern technology. Perfect for city driving and long trips.",
   },
-  {
-    name: "Toyota Fortuner",
-    image: "https://placehold.co/600x400.png",
-    hint: "suv car",
-    transmission: "Automatic",
-    fuel: "Diesel",
-    rate: "4,000",
-    description: "A robust and reliable SUV, the Toyota Fortuner is built for adventure. With its powerful engine and spacious cabin, it can handle any terrain with ease.",
-  },
-  {
-    name: "Honda Brio",
-    image: "https://placehold.co/600x400.png",
-    hint: "hatchback car",
-    transmission: "Automatic",
-    fuel: "Gasoline",
-    rate: "2,200",
-    description: "The Honda Brio is a compact and fuel-efficient hatchback that's fun to drive. Its nimble handling and surprisingly roomy interior make it an ideal choice for navigating city streets.",
-  },
 ];
 
 type Vehicle = (typeof vehicles)[0];
