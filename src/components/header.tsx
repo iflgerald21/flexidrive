@@ -8,7 +8,6 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
-  SheetClose,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
@@ -102,14 +101,14 @@ export default function Header() {
                   </span>
                 </Link>
                 {navLinks.map((link) => (
-                  <SheetClose key={link.name} asChild>
-                    <Link
-                      href={link.href}
-                      className="text-lg font-medium text-foreground transition-colors hover:text-primary"
-                    >
-                      {link.name}
-                    </Link>
-                  </SheetClose>
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setIsSheetOpen(false)}
+                    className="text-lg font-medium text-foreground transition-colors hover:text-primary"
+                  >
+                    {link.name}
+                  </Link>
                 ))}
               </div>
             </SheetContent>
