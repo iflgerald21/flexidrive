@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -21,7 +22,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
 
 const bookingFormSchema = z.object({
   vehicleName: z.string().optional(),
@@ -42,7 +42,7 @@ const bookingFormSchema = z.object({
 });
 
 export default function BookingSection({ vehicleToBook }: { vehicleToBook: string }) {
-  const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof bookingFormSchema>>({
     resolver: zodResolver(bookingFormSchema),
@@ -63,11 +63,16 @@ export default function BookingSection({ vehicleToBook }: { vehicleToBook: strin
 
 
   function onSubmit(values: z.infer<typeof bookingFormSchema>) {
-    toast({
-        title: `Searching for ${values.vehicleName || 'available vehicles'}`,
-        description: "Applying your booking criteria.",
-    });
-    console.log(values);
+    const params = new URLSearchParams();
+    if (values.vehicleName) params.append("vehicleName", values.vehicleName);
+    params.append("pickupLocation", values.pickupLocation);
+    params.append("dropoffLocation", values.dropoffLocation);
+    if (values.pickupDate) params.append("pickupDate", values.pickupDate.toISOString());
+    if (values.returnDate) params.append("returnDate", values.returnDate.toISOString());
+    params.append("pickupTime", values.pickupTime);
+    params.append("returnTime", values.returnTime);
+    
+    router.push(`/booking/details?${params.toString()}`);
   }
 
   return (
