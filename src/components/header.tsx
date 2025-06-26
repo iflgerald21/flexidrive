@@ -44,15 +44,17 @@ export default function Header() {
   return (
     <header className={cn(
         "sticky top-0 z-50 w-full transition-all duration-300",
-        scrolled ? "bg-background/90 backdrop-blur-sm border-b" : "bg-transparent"
+        scrolled ? "bg-background/90 backdrop-blur-sm border-b" : "bg-primary"
     )}>
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <Car className={cn(
-              "h-8 w-8 transition-colors text-primary"
+              "h-8 w-8 transition-colors",
+              scrolled ? "text-primary" : "text-primary-foreground"
           )} />
           <span className={cn(
-              "text-2xl font-bold font-headline transition-colors text-foreground"
+              "text-2xl font-bold font-headline transition-colors",
+               scrolled ? "text-foreground" : "text-primary-foreground"
           )}>
             FlexiDrive
           </span>
@@ -65,7 +67,10 @@ export default function Header() {
               key={link.name}
               href={link.href}
               className={cn(
-                  "text-sm font-medium transition-colors text-muted-foreground hover:text-foreground"
+                  "text-sm font-medium transition-colors",
+                  scrolled
+                    ? "text-muted-foreground hover:text-foreground"
+                    : "text-primary-foreground/80 hover:text-primary-foreground"
               )}
             >
               {link.name}
@@ -81,7 +86,10 @@ export default function Header() {
                 variant="ghost"
                 size="icon"
                 className={cn(
-                    "transition-colors text-foreground hover:bg-accent"
+                    "transition-colors",
+                    scrolled
+                      ? "text-foreground hover:bg-accent"
+                      : "text-primary-foreground hover:bg-white/20"
                 )}
               >
                 <Menu className="h-6 w-6" />
